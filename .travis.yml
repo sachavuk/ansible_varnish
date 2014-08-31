@@ -1,9 +1,7 @@
 ---
 language: python
-python: "2.7"
----
-language: python
-python: "2.7"
+python: 
+  - "2.7"
 before_install:
  - sudo apt-get update -qq
  - sudo apt-get install -qq python-apt python-pycurl
@@ -13,3 +11,7 @@ script:
   - echo localhost > test/inventory
   - ansible-playbook -i test/iventory --syntax-check test/test.yml
   - ansible-playbook -i test/inventory --connection=local --sudo -vvvv test/test.yml
+
+notifications:
+  email:
+    - zenoamaro@gmail.com
