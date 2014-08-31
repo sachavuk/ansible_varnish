@@ -12,6 +12,12 @@ script:
   - echo localhost > test/inventory
   - ansible-playbook -i test/inventory --syntax-check test/test.yml
   - ansible-playbook -i test/inventory --connection=local --sudo -vvvv test/test.yml
+  - >
+    ansible-playbook -i tests/inventory tests/$SITE --connection=local --sudo
+    | grep -q 'changed=0.*failed=0'
+    && (echo 'Idempotence test: pass' && exit 0)
+    || (echo 'Idempotence test: fail' && exit 1)
+  - "curl http://localhost" 
 
 notifications:
   email:
