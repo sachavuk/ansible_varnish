@@ -1,0 +1,16 @@
+- name:  Fetch signing key
+  apt_key: url=http://repo.varnish-cache.org/debian/GPG-key.txt state=present
+
+- name: Add Varnish repository
+  apt_repository: repo='deb http://repo.varnish-cache.org/debian/ {{ansible_lsb.codename}} varnish-3.0' state=present
+
+- name: Ensure varnish is installed
+  apt: pkg=varnish state=installed update_cache=yes 
+
+- name: Push default configuration template
+  template: src=varnish.j2 dest=/etc/default/varnish  owner=root group=root mode=0644
+  notify: restart varnish
+
+- name: copy vcl config 
+  template: src={{ varnish_vcl_file }}.j2 dest={{ varnish_config_path}}/default.vcl
+  notify: restart varnish 
